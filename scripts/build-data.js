@@ -2,16 +2,16 @@
 
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
 const xlsx = require('xlsx');
 const { v2: cloudinary } = require('cloudinary');
 require('dotenv').config({ path: path.resolve(process.cwd(), '.env.local') });
 
-// --- Configuración ---
-const GITHUB_EXCEL_URL = process.env.GITHUB_EXCEL_URL; // ej: 'https://raw.githubusercontent.com/user/repo/main/models.xlsx'
-const DATA_FILE_PATH = path.join(process.cwd(), 'public/data/models.json');
+// --- Constantes de Configuración ---
+const MASTER_MODELS_PATH = path.join(process.cwd(), 'datos_modelos.xlsx');
+const CASTINGS_DIR = path.join(process.cwd(), 'castings');
+const OUTPUT_DATA_PATH = path.join(process.cwd(), 'public/data/data.json'); // Nuevo archivo de salida
 
-// Configuración de Cloudinary desde variables de entorno
+// Configuración de Cloudinary (sin cambios)
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -19,68 +19,31 @@ cloudinary.config({
   secure: true,
 });
 
-// --- Funciones de Ayuda ---
 
-/**
- * Procesa una hoja del archivo Excel y la convierte en un array de objetos.
- * @param {xlsx.WorkSheet} sheet - La hoja de trabajo de la librería xlsx.
- * @param {string} gender - 'woman' o 'man' para procesar campos específicos.
- * @returns {Array<Object>} - Un array con los datos de los modelos.
- */
+// --- Funciones de Ayuda (sin cambios) ---
+
 function processSheet(sheet, gender) {
   const jsonData = xlsx.utils.sheet_to_json(sheet);
-  
   return jsonData.map(row => {
-    const modelData = {
-      gender: gender,
-      name: row['Nombre'],
-      lastName: row['Apellido'],
-      nationality: row['Nacionalidad'],
-      instagram: row['Instagram'],
-      tiktok: row['TikTok'],
-      slug: row['slug'],
-      hairColor: row['Color de Cabello'],
-      eyeColor: row['Color de Ojos'],
-      height: row['Estatura'],
-      shoeSize: row['Talla de Zapato'],
-    };
-
+    const modelData = { gender, name: row['Nombre'], lastName: row['Apellido'], nationality: row['Nacionalidad'], instagram: row['Instagram'], tiktok: row['TikTok'], slug: row['slug'], hairColor: row['Color de Cabello'], eyeColor: row['Color de Ojos'], height: row['Estatura'], shoeSize: row['Talla de Zapato'] };
     if (gender === 'woman') {
       modelData.bust = row['Busto'];
       modelData.waist = row['Cintura'];
       modelData.hips = row['Cadera'];
-    } else { // man
+    } else {
       modelData.chest = row['Pecho'];
       modelData.waist = row['Cintura'];
     }
-    
     return modelData;
   });
 }
 
-/**
- * Obtiene las URLs de las imágenes de un modelo desde Cloudinary.
- * @param {string} slug - El identificador único del modelo.
- * @returns {Promise<{coverUrl: string, portfolioUrls: string[]}>}
- */
 async function getCloudinaryImages(slug) {
   try {
-    // Obtener imagen de portada
-    const coverResult = await cloudinary.search
-      .expression(`folder:models/${slug}/cover`)
-      .sort_by('public_id', 'desc')
-      .max_results(1)
-      .execute();
+    const coverResult = await cloudinary.search.expression(`folder:models/${slug}/cover`).sort_by('public_id', 'desc').max_results(1).execute();
     const coverUrl = coverResult.resources[0]?.secure_url || null;
-
-    // Obtener imágenes del portafolio
-    const portfolioResult = await cloudinary.search
-      .expression(`folder:models/${slug}/portfolio`)
-      .sort_by('public_id', 'asc')
-      .max_results(50) // Límite de 50 imágenes por portafolio
-      .execute();
+    const portfolioResult = await cloudinary.search.expression(`folder:models/${slug}/portfolio`).sort_by('public_id', 'asc').max_results(50).execute();
     const portfolioUrls = portfolioResult.resources.map(res => res.secure_url);
-
     return { coverUrl, portfolioUrls };
   } catch (error) {
     console.error(`Error fetching images for slug ${slug}:`, error);
@@ -89,63 +52,88 @@ async function getCloudinaryImages(slug) {
 }
 
 
-// --- Lógica Principal ---
+// --- Lógica Principal del Script ---
 
 async function buildData() {
-  console.log('--- Iniciando la construcción de datos de modelos ---');
+  console.log('--- Iniciando la construcción de datos ---');
 
-  if (!GITHUB_EXCEL_URL) {
-    console.error('Error: La variable de entorno GITHUB_EXCEL_URL no está definida.');
-    process.exit(1);
+  // --- FASE 1: PROCESAR LA BASE DE DATOS MAESTRA DE MODELOS ---
+  console.log('1/3 - Procesando base de datos maestra de modelos...');
+  
+  // Leemos el archivo local, ya no desde GitHub
+  const masterWorkbook = xlsx.readFile(MASTER_MODELS_PATH);
+  const womenSheet = masterWorkbook.Sheets['Mujeres'];
+  const menSheet = masterWorkbook.Sheets['Hombres'];
+  if (!womenSheet || !menSheet) throw new Error("El archivo maestro debe contener las hojas 'Mujeres' y 'Hombres'");
+
+  let allModels = [...processSheet(womenSheet, 'woman'), ...processSheet(menSheet, 'man')];
+
+  console.log('      -> Obteniendo imágenes de Cloudinary para todos los modelos...');
+  const masterModelsList = [];
+  for (const model of allModels) {
+    if (!model.slug) continue;
+    const { coverUrl, portfolioUrls } = await getCloudinaryImages(model.slug);
+    masterModelsList.push({ ...model, coverImageUrl: coverUrl, portfolioImageUrls: portfolioUrls });
+  }
+  console.log(`      -> ${masterModelsList.length} modelos procesados.`);
+
+
+  // --- FASE 2: PROCESAR LOS ARCHIVOS DE CASTING ---
+  console.log('\n2/3 - Procesando proyectos de casting...');
+  const castingFiles = fs.readdirSync(CASTINGS_DIR).filter(file => file.endsWith('.xlsx'));
+  
+  if (castingFiles.length === 0) {
+      console.log('      -> No se encontraron archivos de casting. Saltando este paso.');
   }
 
-  try {
-    // 1. Descargar el archivo Excel desde GitHub
-    console.log('1/4 - Descargando archivo Excel desde GitHub...');
-    const response = await axios.get(GITHUB_EXCEL_URL, { responseType: 'arraybuffer' });
-    const workbook = xlsx.read(response.data, { type: 'buffer' });
+  const castingsData = [];
+  for (const fileName of castingFiles) {
+    try {
+      const castingSlug = fileName.replace('casting-', '').replace('.xlsx', '');
+      console.log(`      -> Procesando casting: ${castingSlug}`);
+      
+      const workbook = xlsx.readFile(path.join(CASTINGS_DIR, fileName));
+      
+      // Leer los slugs de los modelos
+      const modelsSheet = workbook.Sheets['Modelos'];
+      const modelSlugsForCasting = xlsx.utils.sheet_to_json(modelsSheet, { header: 1 }).flat();
 
-    // 2. Procesar las hojas del Excel
-    console.log('2/4 - Procesando hojas de Excel...');
-    const womenSheet = workbook.Sheets['Mujeres'];
-    const menSheet = workbook.Sheets['Hombres'];
-    
-    if (!womenSheet || !menSheet) {
-      throw new Error("El archivo Excel debe contener las hojas 'Mujeres' y 'Hombres'");
-    }
-
-    const womenData = processSheet(womenSheet, 'woman');
-    const menData = processSheet(menSheet, 'man');
-    let allModels = [...womenData, ...menData];
-
-    // 3. Enriquecer los datos con imágenes de Cloudinary
-    console.log('3/4 - Obteniendo URLs de imágenes desde Cloudinary...');
-    const enrichedModels = [];
-    for (const model of allModels) {
-      if (!model.slug) {
-        console.warn(`Saltando modelo sin slug: ${model.name}`);
-        continue;
+      // Leer la contraseña
+      const configSheet = workbook.Sheets['Config'];
+      const password = configSheet['A1'] ? configSheet['A1'].v : null;
+      if (!password) {
+          console.warn(`         (!) Advertencia: El casting '${castingSlug}' no tiene contraseña en la hoja 'Config', celda A1.`);
       }
-      console.log(`      -> Procesando slug: ${model.slug}`);
-      const { coverUrl, portfolioUrls } = await getCloudinaryImages(model.slug);
-      enrichedModels.push({
-        ...model,
-        coverImageUrl: coverUrl,
-        portfolioImageUrls: portfolioUrls,
+
+      // Filtrar la lista maestra para obtener solo los modelos de este casting
+      const modelsForCasting = masterModelsList.filter(model => modelSlugsForCasting.includes(model.slug));
+
+      castingsData.push({
+        slug: castingSlug,
+        password: password,
+        models: modelsForCasting,
       });
+
+    } catch (error) {
+        console.error(`      (!) Error procesando el archivo de casting ${fileName}:`, error.message);
     }
-
-    // 4. Guardar los datos combinados en un archivo JSON
-    console.log('4/4 - Guardando datos en public/data/models.json...');
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(enrichedModels, null, 2));
-
-    console.log('--- ¡Éxito! El archivo models.json ha sido generado. ---');
-
-  } catch (error) {
-    console.error('--- ¡Error durante la construcción de datos! ---');
-    console.error(error.message);
-    process.exit(1); // Termina el proceso con un código de error
   }
+  console.log(`      -> ${castingsData.length} castings procesados.`);
+
+
+  // --- FASE 3: GUARDAR LOS DATOS COMBINADOS ---
+  console.log('\n3/3 - Guardando datos combinados en public/data/data.json...');
+  const finalData = {
+    allModels: masterModelsList, // Mantenemos la lista completa por si la necesitamos
+    castings: castingsData,      // Añadimos la nueva sección de castings
+  };
+
+  fs.writeFileSync(OUTPUT_DATA_PATH, JSON.stringify(finalData, null, 2));
+  console.log('\n--- ¡Éxito! El archivo data.json ha sido generado. ---');
 }
 
-buildData();
+buildData().catch(error => {
+  console.error('\n--- ¡ERROR FATAL DURANTE LA CONSTRUCCIÓN DE DATOS! ---');
+  console.error(error.message);
+  process.exit(1);
+});

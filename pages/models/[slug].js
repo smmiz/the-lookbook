@@ -7,6 +7,8 @@ import Image from 'next/image';
 import PortfolioGallery from '@/components/PortfolioGallery';
 import styles from '@/styles/ModelProfile.module.css';
 
+// Esta es la página que muestra el perfil PÚBLICO de un solo modelo.
+
 export default function ModelProfile({ model }) {
   if (!model) {
     return <div>Modelo no encontrado.</div>;
@@ -29,8 +31,6 @@ export default function ModelProfile({ model }) {
                     alt={`Foto de ${name} ${lastName}`}
                     fill
                     style={{ objectFit: 'cover' }}
-                    // MODIFICACIÓN: Nos aseguramos de que la propiedad 'priority' esté aquí
-                    // para cargar la imagen principal del perfil de inmediato.
                     priority
                 />
             </div>
@@ -65,8 +65,7 @@ export default function ModelProfile({ model }) {
   );
 }
 
-
-// Las funciones getStaticPaths y getStaticProps se mantienen igual
+// Para esta página, los datos vienen del archivo `models.json` original
 export async function getStaticPaths() {
   const filePath = path.join(process.cwd(), 'public/data/models.json');
   const jsonData = fs.readFileSync(filePath);

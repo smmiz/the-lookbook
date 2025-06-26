@@ -65,13 +65,16 @@ export default function ModelProfile({ model }) {
   );
 }
 
-// Para esta página, los datos vienen del archivo `models.json` original
-export async function getStaticPaths() {
-  const filePath = path.join(process.cwd(), 'public/data/models.json');
-  const jsonData = fs.readFileSync(filePath);
-  const models = JSON.parse(jsonData);
+// --- ARREGLO CLAVE: Ahora leemos del archivo correcto 'data.json' ---
 
-  const paths = models.map((model) => ({
+export async function getStaticPaths() {
+  // Leemos del nuevo archivo de datos consolidado.
+  const filePath = path.join(process.cwd(), 'public/data/data.json');
+  const jsonData = fs.readFileSync(filePath);
+  const data = JSON.parse(jsonData);
+
+  // Usamos la lista 'allModels' que está dentro de data.json.
+  const paths = data.allModels.map((model) => ({
     params: { slug: model.slug },
   }));
 
@@ -80,11 +83,13 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const { slug } = params;
-  const filePath = path.join(process.cwd(), 'public/data/models.json');
+  // Leemos del nuevo archivo de datos consolidado.
+  const filePath = path.join(process.cwd(), 'public/data/data.json');
   const jsonData = fs.readFileSync(filePath);
-  const models = JSON.parse(jsonData);
+  const data = JSON.parse(jsonData);
 
-  const model = models.find((m) => m.slug === slug) || null;
+  // Buscamos el modelo en la lista 'allModels'.
+  const model = data.allModels.find((m) => m.slug === slug) || null;
 
   return {
     props: {

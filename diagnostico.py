@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 
 # --- CONFIGURACIÓN ---
-# Asegúrate de que esta ruta sea exactamente la de tu carpeta de proyecto.
-# He usado la que me indicaste.
+# La ruta raíz de tu proyecto. ¡No la cambies, ya está correcta!
 ROOT_DIR = Path(r"C:\Users\alexa\Desktop\the-lookbook-main")
 
 # Directorios y archivos que no necesitamos ver

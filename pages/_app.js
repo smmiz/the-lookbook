@@ -2,11 +2,16 @@
 
 import Layout from '@/components/Layout';
 import '@/styles/globals.css';
+import { useRouter } from 'next/router';
 
 function MyApp({ Component, pageProps }) {
-  // El Layout envuelve cada página, proporcionando el Navbar y el Footer
+  const router = useRouter();
+  // Verificamos si la ruta actual es la página de inicio ('/').
+  const isHomePage = router.pathname === '/';
+
   return (
-    <Layout>
+    // Pasamos esa información al componente Layout para que sepa cómo actuar.
+    <Layout isHomePage={isHomePage}>
       <Component {...pageProps} />
     </Layout>
   );

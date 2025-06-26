@@ -1,5 +1,87 @@
 /* styles/Home.module.css */
 
+/* --- Estilos para la animación de IZACCES --- */
+
+.heroContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* Restamos el footer */
+  width: 100vw;
+  padding: 1rem;
+  overflow: hidden;
+  text-align: center;
+}
+
+.logoContainer {
+  display: flex;
+  font-size: clamp(3rem, 15vw, 8rem); /* Tamaño de fuente adaptable */
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  position: relative;
+}
+
+.logoPart {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  display: inline-block;
+}
+
+.logoPart.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.acces {
+  transition-delay: 0.2s;
+  margin-left: -0.1em;
+}
+
+.detailsContainer {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
+  transition-delay: 0.5s;
+  max-width: 600px;
+  margin-top: 2rem;
+}
+
+.detailsContainer.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.description {
+  font-size: 1.125rem;
+  color: #a0a0a0;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.ctaButton {
+  font-family: var(--font-main);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.ctaButton:hover {
+  transform: scale(1.05);
+  background-color: #e0e0e0;
+}
+
+
+/* --- Estilos para la galería de modelos (cuando se use en esta página) --- */
+
 .title {
   text-align: center;
   font-size: 2.5rem;
@@ -7,12 +89,29 @@
   margin-bottom: 3rem;
 }
 
-/* Usamos CSS Grid para el layout de la galería */
+/* ARREGLO CLAVE: Usamos una cuadrícula explícita y responsiva */
 .gridContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
+  grid-template-columns: 1fr; /* 1 columna por defecto en móviles */
 }
+
+/* 2 columnas para tablets y pantallas más grandes */
+@media (min-width: 640px) {
+  .gridContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 3 columnas para ordenadores de escritorio */
+@media (min-width: 1024px) {
+  .gridContainer {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* --- Estilos para las tarjetas de modelos --- */
 
 .card {
   border-radius: 12px;
@@ -30,7 +129,7 @@
 .cardImageWrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4; /* Proporción para fotos de retrato */
+  aspect-ratio: 3 / 4;
 }
 
 .cardContent {

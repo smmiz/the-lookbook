@@ -1,52 +1,49 @@
-// Archivo: pages/index.js
+// pages/index.js
 
-import fs from 'fs';
-import path from 'path';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import ModelCard from '@/components/ModelCard';
 import styles from '@/styles/Home.module.css';
 
-export default function HomePage({ models }) {
+export default function HomePage() {
+  const [animationStep, setAnimationStep] = useState(0);
+
+  // Orquestador de la animación
+  useEffect(() => {
+    const timer1 = setTimeout(() => setAnimationStep(1), 500);
+    const timer2 = setTimeout(() => setAnimationStep(2), 1500);
+    const timer3 = setTimeout(() => setAnimationStep(3), 2500);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
+  }, []);
+
   return (
     <>
       <Head>
-        <title>Modelos | Agencia</title>
-        <meta name="description" content="Nuestra lista de modelos profesionales." />
+        <title>IZACCES - Plataforma de Casting Exclusiva</title>
+        <meta name="description" content="La herramienta de presentación de talento exclusiva de IZ Management." />
       </Head>
       
-      <h1 className={styles.title}>Nuestros Modelos</h1>
+      <div className={styles.heroContainer}>
+        <div className={styles.logoContainer}>
+          <span className={`${styles.logoPart} ${animationStep >= 1 ? styles.visible : ''}`}>
+            IZ
+          </span>
+          <span className={`${styles.logoPart} ${styles.acces} ${animationStep >= 2 ? styles.visible : ''}`}>
+            ACCES
+          </span>
+        </div>
 
-      <div className={styles.gridContainer}>
-        {/* MODIFICACIÓN: Pasamos el 'index' al componente ModelCard */}
-        {models.map((model, index) => (
-          <ModelCard key={model.slug} model={model} index={index} />
-        ))}
+        <div className={`${styles.detailsContainer} ${animationStep >= 3 ? styles.visible : ''}`}>
+          <p className={styles.description}>
+            La herramienta de presentación de talento exclusiva de IZ Management.
+          </p>
+          {/* El botón CTA ha sido eliminado. */}
+        </div>
       </div>
     </>
   );
-}
-
-// La función getStaticProps se mantiene igual
-export async function getStaticProps() {
-  const filePath = path.join(process.cwd(), 'public/data/models.json');
-  try {
-    const jsonData = fs.readFileSync(filePath);
-    const models = JSON.parse(jsonData);
-
-    // Solo pasamos los modelos que tienen una imagen de portada
-    const filteredModels = models.filter(model => model.coverImageUrl);
-
-    return {
-      props: {
-        models: filteredModels,
-      },
-    };
-  } catch (error) {
-    console.error("No se pudo leer el archivo models.json. Asegúrate de ejecutar 'npm run build:data' primero.", error);
-    return {
-        props: {
-            models: []
-        }
-    }
-  }
 }

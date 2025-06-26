@@ -100,7 +100,7 @@ async function buildData() {
 
       // Leer la contraseña
       const configSheet = workbook.Sheets['Config'];
-      const password = configSheet['A1'] ? configSheet['A1'].v : null;
+      const password = configSheet['A2'] ? configSheet['A2'].v : null;
       if (!password) {
           console.warn(`         (!) Advertencia: El casting '${castingSlug}' no tiene contraseña en la hoja 'Config', celda A1.`);
       }

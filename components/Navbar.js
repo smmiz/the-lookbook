@@ -8,9 +8,9 @@ const Navbar = () => {
         IZACCES
       </Link>
       <div className="navbar-links">
-        <Link href="/">Modelos</Link>
-        <Link href="/about">Sobre Nosotros</Link> {/* Página de ejemplo */}
-        <Link href="/contact">Contacto</Link> {/* Página de ejemplo */}
+        {/* Los enlaces que querías */}
+        <Link href="/about">Sobre Nosotros</Link>
+        <Link href="/contact">Contacto</Link>
       </div>
     </nav>
   );

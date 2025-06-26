@@ -48,6 +48,28 @@
       ]
     },
     {
+      "gender": "woman",
+      "name": "Alba",
+      "lastName": "Galocha",
+      "nationality": "Costa Rica",
+      "instagram": "valenrojas",
+      "tiktok": "valenrojastk",
+      "slug": "alba-galocha",
+      "hairColor": "Rubio",
+      "eyeColor": "Azules",
+      "height": 178,
+      "shoeSize": 39,
+      "bust": 88,
+      "waist": 64,
+      "hips": 92,
+      "coverImageUrl": "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919214/Whisk_b9083f05ce_aikrrl.jpg",
+      "portfolioImageUrls": [
+        "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919214/Whisk_3f60e0c891_ufqrek.jpg",
+        "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919215/Whisk_6dedc1c2ba_ql6myt.jpg",
+        "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919215/Whisk_904d153cbb_nmlxpj.jpg"
+      ]
+    },
+    {
       "gender": "man",
       "name": "Mateo",
       "lastName": "Castillo",
@@ -94,7 +116,7 @@
   "castings": [
     {
       "slug": "cocacola",
-      "password": "verano2025",
+      "password": null,
       "models": [
         {
           "gender": "woman",
@@ -116,6 +138,99 @@
             "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662971/Whisk_1ea99b26b2_ssmtbl.jpg",
             "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662969/Whisk_6b3ca6c8c7_wztp5l.jpg",
             "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662967/Whisk_e2e9a8bb20_zwwtk0.jpg"
+          ]
+        },
+        {
+          "gender": "woman",
+          "name": "Alba",
+          "lastName": "Galocha",
+          "nationality": "Costa Rica",
+          "instagram": "valenrojas",
+          "tiktok": "valenrojastk",
+          "slug": "alba-galocha",
+          "hairColor": "Rubio",
+          "eyeColor": "Azules",
+          "height": 178,
+          "shoeSize": 39,
+          "bust": 88,
+          "waist": 64,
+          "hips": 92,
+          "coverImageUrl": "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919214/Whisk_b9083f05ce_aikrrl.jpg",
+          "portfolioImageUrls": [
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919214/Whisk_3f60e0c891_ufqrek.jpg",
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919215/Whisk_6dedc1c2ba_ql6myt.jpg",
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919215/Whisk_904d153cbb_nmlxpj.jpg"
+          ]
+        },
+        {
+          "gender": "man",
+          "name": "Mateo",
+          "lastName": "Castillo",
+          "nationality": "Mexicano",
+          "instagram": "mateo_cast",
+          "tiktok": "mateocastillo",
+          "slug": "mateo-castillo",
+          "hairColor": "Negro",
+          "eyeColor": "Cafés",
+          "height": 185,
+          "shoeSize": 43,
+          "chest": 98,
+          "waist": 80,
+          "coverImageUrl": "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662896/Whisk_6dbe519ddd_cpypgh.jpg",
+          "portfolioImageUrls": [
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662925/Whisk_48a31e0ab8_mu7ukj.jpg",
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662927/Whisk_a2020f0019_1_bk3o3l.jpg",
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662929/Whisk_a2020f0019_vgiixz.jpg"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "nikejunio",
+      "password": "nike123",
+      "models": [
+        {
+          "gender": "woman",
+          "name": "Sofia",
+          "lastName": "Gomez",
+          "nationality": "Colombiana",
+          "instagram": "sofia_g",
+          "tiktok": "sofiag",
+          "slug": "sofia-gomez",
+          "hairColor": "Castaño",
+          "eyeColor": "Miel",
+          "height": 175,
+          "shoeSize": 38,
+          "bust": 85,
+          "waist": 62,
+          "hips": 90,
+          "coverImageUrl": "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662984/Whisk_4411606f73_fqdnup.jpg",
+          "portfolioImageUrls": [
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662971/Whisk_1ea99b26b2_ssmtbl.jpg",
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662969/Whisk_6b3ca6c8c7_wztp5l.jpg",
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750662967/Whisk_e2e9a8bb20_zwwtk0.jpg"
+          ]
+        },
+        {
+          "gender": "woman",
+          "name": "Alba",
+          "lastName": "Galocha",
+          "nationality": "Costa Rica",
+          "instagram": "valenrojas",
+          "tiktok": "valenrojastk",
+          "slug": "alba-galocha",
+          "hairColor": "Rubio",
+          "eyeColor": "Azules",
+          "height": 178,
+          "shoeSize": 39,
+          "bust": 88,
+          "waist": 64,
+          "hips": 92,
+          "coverImageUrl": "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919214/Whisk_b9083f05ce_aikrrl.jpg",
+          "portfolioImageUrls": [
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919214/Whisk_3f60e0c891_ufqrek.jpg",
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919215/Whisk_6dedc1c2ba_ql6myt.jpg",
+            "https://res.cloudinary.com/dj9qiuosk/image/upload/v1750919215/Whisk_904d153cbb_nmlxpj.jpg"
           ]
         },
         {

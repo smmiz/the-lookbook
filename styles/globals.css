@@ -1,24 +1,31 @@
 /* styles/globals.css */
 
-/* Usamos las propiedades personalizadas de CSS para definir nuestros temas */
 :root {
   --font-main: 'Space Grotesk', sans-serif;
   --color-background: #fdfdfd;
   --color-text: #1a1a1a;
-  --color-primary: #333;
+  --color-primary: #1a1a1a;
   --color-border: #eaeaea;
   --max-width: 1200px;
   --navbar-height: 70px;
 }
 
 /* Reseteo básico */
-html,
+html {
+  height: 100%;
+}
+
 body {
   padding: 0;
   margin: 0;
   font-family: var(--font-main);
   background-color: var(--color-background);
   color: var(--color-text);
+  overflow-x: hidden;
+  /* ARREGLO CLAVE: Convertimos el body en un contenedor flexbox */
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 a {
@@ -30,15 +37,32 @@ a {
   box-sizing: border-box;
 }
 
-/* Contenedor principal para centrar el contenido */
+/* Contenedor principal para las páginas con contenido */
 .main-container {
-  min-height: calc(100vh - var(--navbar-height) - 80px); /* 80px para el footer */
+  /* ARREGLO CLAVE: Hacemos que el contenido principal crezca
+     para empujar el footer hacia abajo. */
+  flex-grow: 1;
+
   padding: 2rem 1rem;
   max-width: var(--max-width);
+  width: 100%;
   margin: 0 auto;
+  /* Usamos padding-top en lugar de margin-top para evitar problemas de layout */
+  padding-top: calc(var(--navbar-height) + 2rem);
 }
 
-/* Estilos para la barra de navegación */
+/* Contenedor especial para la página de inicio (IZACCES) */
+.home-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: var(--navbar-height);
+}
+
+
+/* Navbar sigue siendo fijo */
 .navbar {
   height: var(--navbar-height);
   display: flex;
@@ -46,16 +70,19 @@ a {
   justify-content: space-between;
   padding: 0 2rem;
   border-bottom: 1px solid var(--color-border);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(253, 253, 253, 0.8);
   backdrop-filter: blur(10px);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
 }
 
 .navbar-logo {
   font-weight: 700;
   font-size: 1.5rem;
+  letter-spacing: -1px;
 }
 
 .navbar-links a {
@@ -68,12 +95,16 @@ a {
   color: #888;
 }
 
-/* Estilos para el pie de página */
+/* Footer vuelve al flujo normal del documento */
 .footer {
+  width: 100%;
   height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-top: 1px solid var(--color-border);
   font-size: 0.9rem;
+  color: #888;
+  /* ARREGLO CLAVE: flex-shrink previene que el footer se encoja */
+  flex-shrink: 0;
 }

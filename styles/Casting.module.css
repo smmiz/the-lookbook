@@ -1,4 +1,4 @@
-/* Archivo: styles/Casting.module.css (¡Este es un archivo nuevo!) */
+/* Archivo: styles/Casting.module.css */
 
 /* Estilos para el contenedor de autenticación */
 .authContainer {
@@ -38,13 +38,6 @@
   border: 1px solid #ddd;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.authInput:focus {
-  outline: none;
-  border-color: #333;
-  box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.1);
 }
 
 .authButton {
@@ -57,11 +50,6 @@
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.authButton:hover {
-  background-color: #444;
 }
 
 .authError {
@@ -80,9 +68,23 @@
   text-transform: capitalize;
 }
 
-/* Reutilizamos el grid de la página de inicio para consistencia */
+/* ARREGLO CLAVE: Usamos una cuadrícula explícita y responsiva */
 .gridContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
+  grid-template-columns: 1fr; /* 1 columna por defecto en móviles */
+}
+
+/* 2 columnas para tablets y pantallas más grandes */
+@media (min-width: 640px) {
+  .gridContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 3 columnas para ordenadores de escritorio */
+@media (min-width: 1024px) {
+  .gridContainer {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
